@@ -16,6 +16,10 @@ pipeline {
     }
 
     stage('package') {
+           when {
+                branch 'main'
+    		}
+
       steps {
         echo 'packaging'
         sh 'mvn package -DskipTests'
@@ -25,6 +29,10 @@ pipeline {
     stage('newly-added-stage') {
       parallel {
         stage('newly-added-stage') {
+		when {
+                	branch 'main'
+    		     }
+
           steps {
             echo 'hey hey'
             sleep 3
@@ -32,6 +40,9 @@ pipeline {
         }
 
         stage('new-stage-2-parallel') {
+                 when {
+                	branch 'main'
+    		     }
           steps {
             echo 'see how it goes'
             sleep 2
@@ -39,8 +50,28 @@ pipeline {
         }
 
         stage('stage-new-branch') {
+		when {
+                	branch 'main'
+    		     }
+
           steps {
             echo 'this is commited to new branch'
+          }
+        }
+
+        stage('Docker B&p') {
+          agent any
+          steps {
+            script {
+              docker.withRegistry('https://index.docker.io/v1/', 'dockerlogin') {
+                def commitHash = env.GIT_COMMIT.take(7)
+                def dockerImage = docker.build("bansal2612/sysfoo:${commitHash}", "./")
+                dockerImage.push()
+                dockerImage.push("latest")
+                dockerImage.push("dev")
+              }
+            }
+
           }
         }
 
