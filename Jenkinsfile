@@ -16,10 +16,9 @@ pipeline {
     }
 
     stage('package') {
-           when {
-                branch 'main'
-    		}
-
+      when {
+        branch 'main'
+      }
       steps {
         echo 'packaging'
         sh 'mvn package -DskipTests'
@@ -29,10 +28,9 @@ pipeline {
     stage('newly-added-stage') {
       parallel {
         stage('newly-added-stage') {
-		when {
-                	branch 'main'
-    		     }
-
+          when {
+            branch 'main'
+          }
           steps {
             echo 'hey hey'
             sleep 3
@@ -40,9 +38,9 @@ pipeline {
         }
 
         stage('new-stage-2-parallel') {
-                 when {
-                	branch 'main'
-    		     }
+          when {
+            branch 'main'
+          }
           steps {
             echo 'see how it goes'
             sleep 2
@@ -50,10 +48,9 @@ pipeline {
         }
 
         stage('stage-new-branch') {
-		when {
-                	branch 'main'
-    		     }
-
+          when {
+            branch 'main'
+          }
           steps {
             echo 'this is commited to new branch'
           }
@@ -75,6 +72,19 @@ pipeline {
           }
         }
 
+      }
+    }
+
+    stage('Deploy to Dev') {
+		when {
+
+			beforeAgent true
+			branch 'main'
+			}
+		agent any
+      steps {
+	echo 'Deploying to Dev Environment with Docker Compose'
+        sh 'docker compose up -d'
       }
     }
 

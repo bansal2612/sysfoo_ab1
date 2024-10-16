@@ -1,0 +1,5 @@
+services:
+  sysfoo:
+    image: bansal2612/sysfoo:latest
+    ports:
+      - 8888:8080
